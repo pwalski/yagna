@@ -61,11 +61,12 @@ pub async fn init_wallet(msg: &Init) -> Result<(), GenericError> {
     let mode = msg.mode();
     let address = msg.address().clone();
 
+    // Unlock wallet in send and receive modes, to allow account_balance requests.
+    get_wallet(&address).and_then(unlock_wallet).await?;
     if mode.contains(AccountMode::SEND) {
         if *NETWORK != Network::Mainnet {
             faucet::request_ngnt(&address).await?;
         }
-        get_wallet(&address).and_then(unlock_wallet).await?;
     }
     Ok(())
 }
