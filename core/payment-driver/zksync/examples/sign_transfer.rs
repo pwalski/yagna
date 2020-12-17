@@ -78,7 +78,7 @@ async fn main() {
     info!("connected sign_tx");
 
     let input_to = "d0670f5eA3218bB6A95dD7FAcdCfAC3f19ECAd36";
-    let input_token = "GNT";
+    let input_token = "GLM";
     let input_amount = "1000000000000000000";
     //let input_pk_seed = "6cae8ce3aaf356922b54a0564dbd7075314183e7cfc4fe8478a9bb7b5f7726a31a189146d53997726b9d77f4edf376280cc3609327705b0b175c8423eb6c59261c";
     //let pk_seed_hex = hex::decode(input_pk_seed).unwrap();
@@ -98,7 +98,7 @@ async fn main() {
     info!("created wallet");
 
     let balance = wallet
-        .get_balance(BlockStatus::Committed, "GNT")
+        .get_balance(BlockStatus::Committed, "GLM")
         .await
         .unwrap();
     info!("balance={}", balance);
@@ -106,7 +106,7 @@ async fn main() {
     if wallet.is_signing_key_set().await.unwrap() == false {
         let unlock = wallet
             .start_change_pubkey()
-            .fee_token("GNT")
+            .fee_token("GLM")
             .unwrap()
             .send()
             .await

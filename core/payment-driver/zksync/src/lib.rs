@@ -7,7 +7,7 @@
 // Public
 pub const PLATFORM_NAME: &'static str = "ZK-NGNT";
 pub const DRIVER_NAME: &'static str = "zksync";
-pub const ZKSYNC_TOKEN_NAME: &'static str = "GNT";
+pub const ZKSYNC_TOKEN_NAME: &'static str = "GLM";
 
 pub use service::ZksyncService as PaymentDriverService;
 

@@ -100,7 +100,7 @@ pub async fn make_transfer(details: &PaymentDetails, nonce: u32) -> Result<Strin
     let wallet = get_wallet(&sender).await?;
 
     let balance = wallet
-        .get_balance(BlockStatus::Committed, "GNT")
+        .get_balance(BlockStatus::Committed, "GLM")
         .await
         .map_err(GenericError::new)?;
     log::debug!("balance before transfer={}", balance);
