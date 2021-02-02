@@ -29,6 +29,6 @@ ya-service-api-interfaces = "0.1"
 
 actix-rt = "1.0"
 anyhow = "1.0"
-awc = "1.0"
+awc = "2.0"
 env_logger = "0.7"
 structopt = "0.3"
