@@ -26,12 +26,8 @@ bigdecimal = "0.2"
 chrono = { version = "0.4", features = ["serde"] }
 diesel = { version = "1.4", features = [ "sqlite", "r2d2", "chrono", "bigdecimal" ] }
 diesel_migrations = "1.4"
-dotenv = "0.15.0"
-env_logger = "0.7"
 futures = "0.3"
-hex = "0.4"
 metrics="0.12"
-lazy_static = "1.4"
 libsqlite3-sys = { version = "0.9.1", features = ["bundled"] }
 log = "0.4"
 num-bigint = "0.3"
@@ -53,4 +49,6 @@ ya-net = { version = "0.1", features = ["service"] }
 ya-sb-router = "0.3"
 
 actix-rt = "1.0"
+dotenv = "0.15.0"
+env_logger = "0.7"
 ethkey = "0.3.1"
