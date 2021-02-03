@@ -19,7 +19,8 @@ appdirs = "0.2"
 chrono = { version = "0.4", features = ["serde"] }
 diesel = { version = "1.4", features = ["sqlite", "r2d2", "chrono"] }
 diesel_migrations = "1.4"
-ethsign = "0.7.3"
+# ethsign = "0.7.3"
+ethsign = { git = "https://github.com/tomusdrw/ethsign", rev = "9635f39ffec84323c367c9cdfc822030c6dac491"}
 futures = "0.3"
 log = "0.4"
 promptly = "0.1.5"

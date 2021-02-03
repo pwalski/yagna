@@ -2125,7 +2125,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7712c3a9ec745e651729d1923cae98240303ae25938a3a59128423266f3578ae"
 dependencies = [
  "env_logger 0.5.13",
- "ethsign",
+ "ethsign 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "log",
  "parity-crypto 0.3.1",
  "rand 0.6.5",
@@ -2146,6 +2146,19 @@ dependencies = [
  "rand 0.7.3",
  "rustc-hex",
  "secp256k1 0.15.5",
+ "serde",
+ "zeroize 1.2.0",
+]
+
+[[package]]
+name = "ethsign"
+version = "0.7.3"
+source = "git+https://github.com/tomusdrw/ethsign?rev=9635f39ffec84323c367c9cdfc822030c6dac491#9635f39ffec84323c367c9cdfc822030c6dac491"
+dependencies = [
+ "parity-crypto 0.6.2",
+ "rand 0.8.2",
+ "rustc-hex",
+ "secp256k1 0.20.1",
  "serde",
  "zeroize 1.2.0",
 ]
@@ -5236,6 +5249,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "secp256k1"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "733b114f058f260c0af7591434eef4272ae1a8ec2751766d3cb89c6df8d5e450"
+dependencies = [
+ "secp256k1-sys 0.4.0",
+]
+
+[[package]]
 name = "secp256k1-sys"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5249,6 +5271,15 @@ name = "secp256k1-sys"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "11553d210db090930f4432bea123b31f70bbf693ace14504ea2a35e796c28dd2"
+dependencies = [
+ "cc",
+]
+
+[[package]]
+name = "secp256k1-sys"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67e4b6455ee49f5901c8985b88f98fb0a0e1d90a6661f5a03f4888bd987dad29"
 dependencies = [
  "cc",
 ]
@@ -7269,7 +7300,7 @@ dependencies = [
  "diesel_migrations",
  "dotenv",
  "env_logger 0.7.1",
- "ethsign",
+ "ethsign 0.7.3 (git+https://github.com/tomusdrw/ethsign?rev=9635f39ffec84323c367c9cdfc822030c6dac491)",
  "futures 0.3.12",
  "log",
  "promptly 0.1.5",
@@ -7422,7 +7453,7 @@ dependencies = [
  "diesel_migrations",
  "dotenv",
  "env_logger 0.7.1",
- "ethkey",
+ "ethsign 0.7.3 (git+https://github.com/tomusdrw/ethsign?rev=9635f39ffec84323c367c9cdfc822030c6dac491)",
  "futures 0.3.12",
  "humantime 2.1.0",
  "libsqlite3-sys",

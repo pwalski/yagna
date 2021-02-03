@@ -51,4 +51,4 @@ ya-sb-router = "0.3"
 actix-rt = "1.0"
 dotenv = "0.15.0"
 env_logger = "0.7"
-ethkey = "0.3.1"
+ethsign = { git = "https://github.com/tomusdrw/ethsign", rev = "9635f39ffec84323c367c9cdfc822030c6dac491"}
