@@ -139,11 +139,7 @@ pub async fn make_transfer(
 
     let sender = details.sender.clone();
     let wallet = get_wallet(&sender, network).await?;
-    let mut token = get_network_token(network, None);
-    // TODO Investiggate and fix tGLM ticker name on rinkeby
-    if token == "tGLM" {
-        token = ZKSYNC_TOKEN_NAME.to_string();
-    }
+    let token = get_network_token(network, None);
 
     let balance = wallet
         .get_balance(BlockStatus::Committed, token.as_ref())
@@ -186,7 +182,10 @@ struct TxRespObj {
 }
 
 pub async fn verify_tx(tx_hash: &str, network: Network) -> Result<PaymentDetails, GenericError> {
-    let provider_url = get_rpc_addr(get_zk_network(network));
+    let provider_url = match get_rpc_addr_from_env(network) {
+        Some(rpc_addr) => rpc_addr,
+        None => get_rpc_addr(get_zk_network(network)).to_string(),
+    };
     // HACK: Get the transaction data from v0.1 api
     let api_url = provider_url.replace("/jsrpc", "/api/v0.1");
     let req_url = format!("{}/transactions_all/{}", api_url, tx_hash);
@@ -223,11 +222,18 @@ pub async fn verify_tx(tx_hash: &str, network: Network) -> Result<PaymentDetails
 }
 
 fn get_provider(network: Network) -> Provider {
-    let provider: Provider = match env::var("ZKSYNC_RPC_ADDRESS").ok() {
+    let provider: Provider = match get_rpc_addr_from_env(network) {
         Some(rpc_addr) => Provider::from_addr(rpc_addr),
         None => Provider::new(get_zk_network(network)),
     };
     provider.clone()
+}
+
+fn get_rpc_addr_from_env(network: Network) -> Option<String> {
+    match network {
+        Network::Mainnet => env::var("ZKSYNC_MAINNET_RPC_ADDRESS").ok(),
+        Network::Rinkeby => env::var("ZKSYNC_RINKEBY_RPC_ADDRESS").ok(),
+    }
 }
 
 async fn get_wallet(
@@ -262,11 +268,8 @@ async fn unlock_wallet<S: EthereumSigner + Clone>(
         .map_err(GenericError::new)?
     {
         log::info!("Unlocking wallet... address = {}", wallet.signer.address);
-        let mut token = get_network_token(network, None);
-        // TODO Investiggate and fix tGLM ticker name on rinkeby
-        if token == "tGLM" {
-            token = ZKSYNC_TOKEN_NAME.to_string();
-        }
+        let token = get_network_token(network, None);
+
         let unlock = wallet
             .start_change_pubkey()
             .fee_token(token.as_ref())
