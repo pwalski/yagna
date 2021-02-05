@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - mwu/crate-cleanup
   pull_request:
     branches:
       - master
