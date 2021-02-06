@@ -1,5 +1,5 @@
 use anyhow::Result;
-use bigdecimal::BigDecimal;
+use bigdecimal::{BigDecimal, FromPrimitive};
 use serde_json::json;
 
 use ya_agreement_utils::ComInfo;
@@ -52,7 +52,7 @@ impl PaymentModel for LinearPricing {
                 .zip(usage.iter())
                 .map(|(coeff, usage_value)| coeff * usage_value)
                 .sum::<f64>();
-        Ok(BigDecimal::from(cost))
+        Ok(BigDecimal::from_f64(cost).unwrap())
     }
 
     fn expected_usage_len(&self) -> usize {
