@@ -1,12 +1,18 @@
 use anyhow::bail;
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+use structopt::StructOpt;
 
-use ya_agreement_utils::OfferDefinition;
+use ya_agreement_utils::{AgreementView, ProposalView};
+use ya_negotiators::component::{RejectReason, Score};
+use ya_negotiators::{AgreementResult, NegotiationResult, NegotiatorComponent};
 
-use crate::market::negotiator::factory::LimitAgreementsNegotiatorConfig;
-use crate::market::negotiator::{
-    AgreementResult, NegotiationResult, NegotiatorComponent, ProposalView,
-};
+/// Configuration for LimitAgreements Negotiator.
+#[derive(StructOpt, Clone, Debug, Serialize, Deserialize)]
+pub struct Config {
+    #[structopt(long, env, default_value = "1")]
+    pub max_simultaneous_agreements: u32,
+}
 
 /// Negotiator that can limit number of running agreements.
 pub struct MaxAgreements {
@@ -15,11 +21,12 @@ pub struct MaxAgreements {
 }
 
 impl MaxAgreements {
-    pub fn new(config: &LimitAgreementsNegotiatorConfig) -> MaxAgreements {
-        MaxAgreements {
+    pub fn new(config: serde_yaml::Value) -> anyhow::Result<MaxAgreements> {
+        let config: Config = serde_yaml::from_value(config)?;
+        Ok(MaxAgreements {
             max_agreements: config.max_simultaneous_agreements,
             active_agreements: HashSet::new(),
-        }
+        })
     }
 
     pub fn has_free_slot(&self) -> bool {
@@ -32,29 +39,26 @@ impl NegotiatorComponent for MaxAgreements {
         &mut self,
         demand: &ProposalView,
         offer: ProposalView,
+        score: Score,
     ) -> anyhow::Result<NegotiationResult> {
         if self.has_free_slot() {
-            Ok(NegotiationResult::Ready { offer })
+            Ok(NegotiationResult::Ready {
+                proposal: offer,
+                score,
+            })
         } else {
             log::info!(
                 "'MaxAgreements' negotiator: Reject proposal [{}] due to limit.",
-                demand.agreement_id, // TODO: Should be just `id`, but I reuse AgreementView struct.
+                demand.id,
             );
             Ok(NegotiationResult::Reject {
-                message: format!(
+                reason: RejectReason::new(format!(
                     "No capacity available. Reached Agreements limit: {}",
                     self.max_agreements
-                ),
+                )),
                 is_final: false,
             })
         }
-    }
-
-    fn fill_template(
-        &mut self,
-        offer_template: OfferDefinition,
-    ) -> anyhow::Result<OfferDefinition> {
-        Ok(offer_template)
     }
 
     fn on_agreement_terminated(
@@ -69,15 +73,15 @@ impl NegotiatorComponent for MaxAgreements {
         Ok(())
     }
 
-    fn on_agreement_approved(&mut self, agreement_id: &str) -> anyhow::Result<()> {
+    fn on_agreement_approved(&mut self, agreement: &AgreementView) -> anyhow::Result<()> {
         if self.has_free_slot() {
-            self.active_agreements.insert(agreement_id.to_string());
+            self.active_agreements.insert(agreement.id.to_string());
             Ok(())
         } else {
-            self.active_agreements.insert(agreement_id.to_string());
+            self.active_agreements.insert(agreement.id.to_string());
             bail!(
                 "Agreement [{}] approved despite not available capacity.",
-                agreement_id
+                agreement.id
             )
         }
     }
